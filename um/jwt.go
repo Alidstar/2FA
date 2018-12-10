@@ -2,15 +2,17 @@ package um
 
 import (
 	"fmt"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
 func (um *UserManager) generateToken(username string) string {
 	claims := &jwt.StandardClaims{
-		Issuer:   "cw",
-		Audience: username,
-		Subject:  "cwauthen",
+		Issuer:    "cw",
+		Audience:  username,
+		ExpiresAt: time.Now().Unix() + 2592000,
+		Subject:   "cwauthen",
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
