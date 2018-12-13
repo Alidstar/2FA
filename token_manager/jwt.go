@@ -1,4 +1,4 @@
-package um
+package tokenmanager
 
 import (
 	"fmt"
@@ -7,16 +7,15 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-func (um *UserManager) generateToken(username string) string {
+func generateToken(username, signature string) string {
 	claims := &jwt.StandardClaims{
 		Issuer:    "cw",
 		Audience:  username,
 		ExpiresAt: time.Now().Unix() + 2592000,
-		Subject:   "cwauthen",
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString([]byte(um.signature))
+	ss, err := token.SignedString([]byte(signature))
 	if err != nil {
 		panic(err)
 	}
@@ -24,9 +23,9 @@ func (um *UserManager) generateToken(username string) string {
 	return ss
 }
 
-func (um *UserManager) verifyToken(tokenString string) (bool, string) {
+func verifyToken(tokenString string, signature string) (bool, string) {
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(um.signature), nil
+		return []byte(signature), nil
 	})
 
 	if err != nil {

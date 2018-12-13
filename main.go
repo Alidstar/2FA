@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"./line"
-	"./um"
+	tm "./token_manager"
 )
 
 type Server interface {
@@ -16,13 +16,12 @@ const auth2Path = "auth2"
 const callbackPath = "done"
 
 func main() {
-	um := um.NewUserManager()
+	manager := tm.NewTokenManager()
 
 	username := "user1"
-	um.Register(username)
-	token := um.Login(username)
+	token := manager.GenerateToken(username)
 	fmt.Println("Token", token)
-	result, username2 := um.Verify(token)
+	result, username2 := manager.Verify(token)
 	fmt.Println("Verify:", username2, result)
 
 	if false {
